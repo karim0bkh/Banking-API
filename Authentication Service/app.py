@@ -1,3 +1,4 @@
+from functools import wraps
 from flask import Flask, jsonify, request
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -68,6 +69,50 @@ def login():
         return jsonify({'token': token}), 200
 
     return jsonify({'message': 'Invalid credentials.'}), 401
+
+
+def authenticate(func):
+    @wraps(func)
+    def decorated(*args, **kwargs):
+        token = request.get('token')
+
+        if not token:
+            return jsonify({'message': 'Missing token.'}), 401
+
+        try:
+            data =jwt.decode(token, app.config['SECRET_KEY'])
+
+            kwargs['user_id'] = data['id']  # Pass the user ID to the decorated function
+        except jwt.ExpiredSignatureError:
+            return jsonify({'message': 'Token has expired.'}), 401
+        except jwt.InvalidTokenError:
+            return jsonify({'message': 'Invalid token.1'}), 401
+
+        return func(*args, **kwargs)
+
+    return decorated
+
+
+# Verify route
+@app.route('/verify', methods=['POST'])
+def verify_token():
+    data = request.get_json()
+
+    token = data.get("token")         
+
+
+    if not token:
+        return jsonify({'message': 'Missing token.'}), 401
+
+    try:
+        jwt.decode(token, app.config['SECRET_KEY'])
+        print(jwt.decode(token, app.config['SECRET_KEY']))
+        return jsonify({'message': 'Token is valid.'}), 200
+    except jwt.ExpiredSignatureError:
+        print(jwt.ExpiredSignatureError)
+        return jsonify({'message': 'Token has expired.'}), 401
+    except jwt.InvalidTokenError:
+        return jsonify({'message': 'Invalid token2.'}), 401
 
 
 # Run the application
