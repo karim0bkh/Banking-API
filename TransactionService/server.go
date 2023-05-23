@@ -5,6 +5,7 @@ import (
 	"log"
 	"net"
 	_ "github.com/lib/pq"
+	"google.golang.org/grpc/reflection"
 
 
 	pb "TransactionService/proto"
@@ -34,6 +35,8 @@ func main() {
 	// Create the transaction service server
 	s := grpc.NewServer()
 	pb.RegisterTransactionServiceServer(s, &server{db: db})
+	// Enable Server Reflection
+	reflection.Register(s)
 
 	// Start listening on the designated port
 	lis, err := net.Listen("tcp", port)

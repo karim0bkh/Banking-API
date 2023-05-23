@@ -34,7 +34,7 @@ async function startServer() {
   server.applyMiddleware({ app });
 
   // Start the server
-  const PORT = 4000;
+  const PORT = 8003;
   app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
     console.log(`GraphQL Playground available at http://localhost:${PORT}${server.graphqlPath}`);
