@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package transaction;
 
-option go_package = "./";
+option go_package = "./proto";
 
 service TransactionService {
   rpc Transfer(TransferRequest) returns (TransferResponse) {}
@@ -64,5 +64,20 @@ message Transaction {
   string fromAccountId = 2;
   string toAccountId = 3;
   double amount = 4;
-  int64 timestamp = 5;
+}
+message Transaction_DEPOSIT {
+  string transactionId = 1;
+  string AccountId = 2;
+  double amount = 4;
+}
+message Transaction_WITHDRAWAL {
+  string transactionId = 1;
+  string AccountId = 2;
+  double amount = 4;
+}
+message Account {
+  string id = 1;
+  string customer_id = 2;
+  double balance = 3;
+  string currency = 4;
 }

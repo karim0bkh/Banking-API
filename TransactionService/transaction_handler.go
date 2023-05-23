@@ -2,16 +2,13 @@ package main
 
 import (
 	"context"
-	"database/sql"
-	"fmt"
 	"log"
 
-	pb "./"
+	pb "TransactionService/proto"
 )
 
-type server struct {
-	db *sql.DB
-}
+func (s *server) mustEmbedUnimplementedTransactionServiceServer() {}
+
 
 func (s *server) Transfer(ctx context.Context, req *pb.TransferRequest) (*pb.TransferResponse, error) {
 	fromAccountID := req.GetFromAccountId()
@@ -33,8 +30,11 @@ func (s *server) Transfer(ctx context.Context, req *pb.TransferRequest) (*pb.Tra
 	}
 
 	// Check if the from account has sufficient balance
-	if fromAccount.GetBalance() < amount {
-		return nil, fmt.Errorf("insufficient balance in the from account")
+	if fromAccount.Balance < amount {
+		return &pb.TransferResponse{
+			Success: false,
+			Message: "insufficient balance in the from account",
+		}, nil
 	}
 
 	// Perform the transfer
@@ -58,12 +58,10 @@ func (s *server) Transfer(ctx context.Context, req *pb.TransferRequest) (*pb.Tra
 	// Create transaction record
 	transactionID := generateTransactionID()
 	transaction := &pb.Transaction{
-		Id:          transactionID,
-		FromAccount: fromAccountID,
-		ToAccount:   toAccountID,
-		Amount:      amount,
-		Type:        pb.Transaction_TRANSFER,
-		Timestamp:   ptypes.TimestampNow(),
+		TransactionId: transactionID,
+		FromAccountId: fromAccountID,
+		ToAccountId:   toAccountID,
+		Amount:        amount,
 	}
 
 	// Save transaction to the database
@@ -74,7 +72,8 @@ func (s *server) Transfer(ctx context.Context, req *pb.TransferRequest) (*pb.Tra
 	}
 
 	return &pb.TransferResponse{
-		TransactionId: transactionID,
+		Success:      true,
+		Message:      "Transfer successful",
 	}, nil
 }
 
@@ -101,23 +100,22 @@ func (s *server) Deposit(ctx context.Context, req *pb.DepositRequest) (*pb.Depos
 
 	// Create transaction record
 	transactionID := generateTransactionID()
-	transaction := &pb.Transaction{
-		Id:          transactionID,
-		Account:     accountID,
-		Amount:      amount,
-		Type:        pb.Transaction_DEPOSIT,
-		Timestamp:   ptypes.TimestampNow(),
+	transaction := &pb.Transaction_DEPOSIT{
+		TransactionId: transactionID,
+		AccountId:       accountID,
+		Amount:        amount,
 	}
 
 	// Save transaction to the database
-	err = saveTransaction(s.db, transaction)
+	err = saveTransaction_Transaction_DEPOSIT(s.db, transaction)
 	if err != nil {
 		log.Printf("failed to save transaction: %v", err)
 		return nil, err
 	}
 
 	return &pb.DepositResponse{
-		TransactionId: transactionID,
+		Success:      true,
+		Message:      "Deposit successful",
 	}, nil
 }
 
@@ -133,8 +131,11 @@ func (s *server) Withdraw(ctx context.Context, req *pb.WithdrawRequest) (*pb.Wit
 	}
 
 	// Check if the account has sufficient balance
-	if account.GetBalance() < amount {
-		return nil, fmt.Errorf("insufficient balance in the account")
+	if account.Balance < amount {
+		return &pb.WithdrawResponse{
+			Success: false,
+			Message: "insufficient balance in the account",
+		}, nil
 	}
 
 	// Perform the withdrawal
@@ -149,23 +150,22 @@ func (s *server) Withdraw(ctx context.Context, req *pb.WithdrawRequest) (*pb.Wit
 
 	// Create transaction record
 	transactionID := generateTransactionID()
-	transaction := &pb.Transaction{
-		Id:          transactionID,
-		Account:     accountID,
-		Amount:      amount,
-		Type:        pb.Transaction_WITHDRAWAL,
-		Timestamp:   ptypes.TimestampNow(),
+	transaction := &pb.Transaction_WITHDRAWAL{
+		TransactionId: transactionID,
+		AccountId:       accountID,
+		Amount:        amount,
 	}
 
 	// Save transaction to the database
-	err = saveTransaction(s.db, transaction)
+	err = saveTransaction_Transaction_WITHDRAWAL(s.db, transaction)
 	if err != nil {
 		log.Printf("failed to save transaction: %v", err)
 		return nil, err
 	}
 
 	return &pb.WithdrawResponse{
-		TransactionId: transactionID,
+		Success:      true,
+		Message:      "Withdrawal successful",
 	}, nil
 }
 

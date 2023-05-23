@@ -6,7 +6,7 @@ import (
 	"log"
 	"github.com/google/uuid"
 
-	pb "github.com/lib/pq"
+	pb "TransactionService/proto"
 )
 
 func retrieveAccount(db *sql.DB, accountID string) (*pb.Account, error) {
@@ -41,8 +41,30 @@ func updateAccount(db *sql.DB, account *pb.Account) error {
 
 func saveTransaction(db *sql.DB, transaction *pb.Transaction) error {
 	// Save the transaction to the database
-	query := "INSERT INTO transactions (id, from_account_id, to_account_id, amount, type, timestamp) VALUES ($1, $2, $3, $4, $5, $6)"
-	_, err := db.Exec(query, transaction.Id, transaction.FromAccount, transaction.ToAccount, transaction.Amount, transaction.Type, transaction.Timestamp)
+	query := "INSERT INTO transactions (id, from_account_id, to_account_id, amount) VALUES ($1, $2, $3, $4)"
+	_, err := db.Exec(query, transaction.TransactionId, transaction.FromAccountId, transaction.ToAccountId, transaction.Amount)
+	if err != nil {
+		log.Printf("failed to save transaction: %v", err)
+		return err
+	}
+
+	return nil
+}
+func saveTransaction_Transaction_WITHDRAWAL(db *sql.DB, transaction *pb.Transaction_WITHDRAWAL) error {
+	// Save the transaction to the database
+	query := "INSERT INTO transactions (id, from_account_id, to_account_id, amount) VALUES ($1, $2, $3, $4)"
+	_, err := db.Exec(query, transaction.TransactionId, transaction.AccountId, transaction.AccountId, transaction.Amount)
+	if err != nil {
+		log.Printf("failed to save transaction: %v", err)
+		return err
+	}
+
+	return nil
+}
+func saveTransaction_Transaction_DEPOSIT(db *sql.DB, transaction *pb.Transaction_DEPOSIT) error {
+	// Save the transaction to the database
+	query := "INSERT INTO transactions (id, from_account_id, to_account_id, amount) VALUES ($1, $2, $3, $4)"
+	_, err := db.Exec(query, transaction.TransactionId, transaction.AccountId, transaction.AccountId, transaction.Amount)
 	if err != nil {
 		log.Printf("failed to save transaction: %v", err)
 		return err
@@ -53,11 +75,11 @@ func saveTransaction(db *sql.DB, transaction *pb.Transaction) error {
 
 func retrieveTransaction(db *sql.DB, transactionID string) (*pb.Transaction, error) {
 	// Retrieve transaction from the database based on the transaction ID
-	query := "SELECT id, from_account_id, to_account_id, amount, type, timestamp FROM transactions WHERE id = $1"
+	query := "SELECT id, from_account_id, to_account_id, amount FROM transactions WHERE id = $1"
 	row := db.QueryRow(query, transactionID)
 
 	var transaction pb.Transaction
-	err := row.Scan(&transaction.Id, &transaction.FromAccount, &transaction.ToAccount, &transaction.Amount, &transaction.Type, &transaction.Timestamp)
+	err := row.Scan(&transaction.TransactionId, &transaction.FromAccountId, &transaction.ToAccountId, &transaction.Amount)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return nil, fmt.Errorf("transaction not found")
@@ -71,7 +93,7 @@ func retrieveTransaction(db *sql.DB, transactionID string) (*pb.Transaction, err
 
 func retrieveTransactionsByCustomer(db *sql.DB, customerID string) ([]*pb.Transaction, error) {
 	// Retrieve transactions from the database for the given customer ID
-	query := "SELECT id, from_account_id, to_account_id, amount, type, timestamp FROM transactions WHERE from_account_id IN (SELECT id FROM accounts WHERE customer_id = $1) OR to_account_id IN (SELECT id FROM accounts WHERE customer_id = $1)"
+	query := "SELECT id, from_account_id, to_account_id, amount FROM transactions WHERE from_account_id IN (SELECT id FROM accounts WHERE customer_id = $1) OR to_account_id IN (SELECT id FROM accounts WHERE customer_id = $1)"
 	rows, err := db.Query(query, customerID)
 	if err != nil {
 		log.Printf("failed to retrieve transactions: %v", err)
@@ -82,7 +104,7 @@ func retrieveTransactionsByCustomer(db *sql.DB, customerID string) ([]*pb.Transa
 	var transactions []*pb.Transaction
 	for rows.Next() {
 		var transaction pb.Transaction
-		err := rows.Scan(&transaction.Id, &transaction.FromAccount, &transaction.ToAccount, &transaction.Amount, &transaction.Type, &transaction.Timestamp)
+		err := rows.Scan(&transaction.TransactionId, &transaction.FromAccountId, &transaction.ToAccountId, &transaction.Amount)
 		if err != nil {
 			log.Printf("failed to retrieve transaction: %v", err)
 			return nil, err

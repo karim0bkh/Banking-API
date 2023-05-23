@@ -1,25 +1,26 @@
 package main
 
 import (
-	"context"
 	"database/sql"
-	"fmt"
 	"log"
 	"net"
+	_ "github.com/lib/pq"
 
-	"google.golang.org/protobuf"
-	pb "./"
+
+	pb "TransactionService/proto"
 
 	"google.golang.org/grpc"
 )
 
 const (
 	port           = ":50051"
-	dbConnectionString = "postgres://user:password@localhost/banking_db?sslmode=disable"
+	dbConnectionString = "postgres://postgres:karimbkh@localhost/bank?sslmode=disable"
 )
 
 type server struct {
 	db *sql.DB
+	pb.UnimplementedTransactionServiceServer
+
 }
 
 func main() {
