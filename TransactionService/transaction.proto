@@ -1,0 +1,68 @@
+syntax = "proto3";
+
+package transaction;
+
+option go_package = "./";
+
+service TransactionService {
+  rpc Transfer(TransferRequest) returns (TransferResponse) {}
+  rpc Deposit(DepositRequest) returns (DepositResponse) {}
+  rpc Withdraw(WithdrawRequest) returns (WithdrawResponse) {}
+  rpc GetTransaction(GetTransactionRequest) returns (GetTransactionResponse) {}
+  rpc GenerateReport(GenerateReportRequest) returns (GenerateReportResponse) {}
+}
+
+message TransferRequest {
+  string fromAccountId = 1;
+  string toAccountId = 2;
+  double amount = 3;
+}
+
+message TransferResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+message DepositRequest {
+  string accountId = 1;
+  double amount = 2;
+}
+
+message DepositResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+message WithdrawRequest {
+  string accountId = 1;
+  double amount = 2;
+}
+
+message WithdrawResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+message GetTransactionRequest {
+  string transactionId = 1;
+}
+
+message GetTransactionResponse {
+  Transaction transaction = 1;
+}
+
+message GenerateReportRequest {
+  string customerId = 1;
+}
+
+message GenerateReportResponse {
+  repeated Transaction transactions = 1;
+}
+
+message Transaction {
+  string transactionId = 1;
+  string fromAccountId = 2;
+  string toAccountId = 3;
+  double amount = 4;
+  int64 timestamp = 5;
+}
