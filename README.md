@@ -1,5 +1,5 @@
 # Banking-API
-a Banking API using gRPC , REST and GraphQL using TypeScript, Python, GoLang and Rust , PostgreSQL as a database.
+a Banking API using gRPC , REST and GraphQL using TypeScript, Python, GoLang , PostgreSQL as a database.
 <h1 align="center">API Gateway Documentation</h1>
 
 This documentation provides an overview of the API gateway, which serves as a central entry point for routing requests to various microservices. The API gateway is built using Flask and acts as a proxy for the underlying microservices.
