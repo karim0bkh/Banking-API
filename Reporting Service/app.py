@@ -1,7 +1,7 @@
 import grpc_requests
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
-from flask import Flask, request
+from flask import Flask, jsonify, request
 
 app = Flask(__name__)
 
@@ -14,7 +14,8 @@ def handle_generate_report():
     
     try:
         generate_report(customer_id)
-        return "Report generated successfully."
+    
+        return jsonify("Report generated successfully." , 200)
     except Exception as e:
         return str(e), 500
 
