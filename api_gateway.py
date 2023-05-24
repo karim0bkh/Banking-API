@@ -9,7 +9,7 @@ app = Flask(__name__)
 #transaction microservice starts here
 @app.route('/transfer', methods=['POST'])
 def transfer():
-    endpoint = "localhost:50051"  # Replace with the actual gRPC server endpoint
+    endpoint = "localhost:50051"  
 
     # Create a gRPC client
     client = grpc_requests.Client(endpoint)
@@ -26,7 +26,7 @@ def transfer():
 
 @app.route('/deposit', methods=['POST'])
 def deposit():
-    endpoint = "localhost:50051"  # Replace with the actual gRPC server endpoint
+    endpoint = "localhost:50051"  
 
     # Create a gRPC client
     client = grpc_requests.Client(endpoint)
@@ -43,7 +43,7 @@ def deposit():
 
 @app.route('/withdraw', methods=['POST'])
 def withdraw():
-    endpoint = "localhost:50051"  # Replace with the actual gRPC server endpoint
+    endpoint = "localhost:50051"  
 
     # Create a gRPC client
     client = grpc_requests.Client(endpoint)
@@ -60,7 +60,7 @@ def withdraw():
 
 @app.route('/get_transaction', methods=['POST'])
 def get_transaction():
-    endpoint = "localhost:50051"  # Replace with the actual gRPC server endpoint
+    endpoint = "localhost:50051"  
 
     # Create a gRPC client
     client = grpc_requests.Client(endpoint)
