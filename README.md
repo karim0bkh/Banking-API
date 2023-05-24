@@ -9,6 +9,12 @@ This documentation provides an overview of the API gateway, which serves as a ce
 - **Endpoint**: `/transfer`
   - **Method**: POST
   - **Description**: Handles the transfer of funds.
+  - **Payload**: {
+  "fromAccountId": "account1",
+  "toAccountId": "account2",
+  "amount": 100.0
+}
+
   - **gRPC request**: `Transfer`
 
 - **Endpoint**: `/deposit`
