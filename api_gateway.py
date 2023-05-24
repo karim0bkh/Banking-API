@@ -168,6 +168,9 @@ def register():
 
 
 #auth service ends here
+
+#customer service starts here
+
 GRAPHQL_SERVICE_URL = "http://localhost:8003/graphql"
 
 @app.route('/graphql', methods=['POST'])
@@ -175,9 +178,6 @@ def graphql():
     # Proxy the GraphQL request to the GraphQL service
     response = requests.post(GRAPHQL_SERVICE_URL, json=request.get_json())
     return jsonify(response.json()), response.status_code
-
-
-#customer service starts here
 
 
 #customer service ends here
