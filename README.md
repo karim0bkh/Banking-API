@@ -29,7 +29,7 @@ This documentation provides an overview of the API gateway, which serves as a ce
 - **Endpoint**: `/withdraw`
   - **Method**: POST
   - **Description**: Handles the withdrawal of funds.
-    - **Payload**: {
+  - **Payload**: {
   "accountId": "account1",
   "amount": 200.0
 }
