@@ -4,6 +4,39 @@ a Banking API using gRPC , REST and GraphQL using TypeScript, Python, GoLang , P
 
 This documentation provides an overview of the API gateway, which serves as a central entry point for routing requests to various microservices. The API gateway is built using Flask and acts as a proxy for the underlying microservices.
 
+
+## Customer Service
+
+Use GraphQL: GraphQL allows clients to fetch customer information and account details in a flexible and efficient manner. Clients can request specific fields and nested data structures, reducing over-fetching and allowing them to shape the data according to their needs.
+
+## Account Service
+
+Use REST: REST provides a standardized and familiar interface for managing bank accounts. Clients can perform CUD operations on accounts using HTTP verbs (POST, PUT, DELETE) and access account-related endpoints such as deleting account details, creating accounts, and performing usual requests about accounts and customer details.
+
+## Transaction Service
+
+Use gRPC: gRPC can be used for inter-service communication between the Transaction Service and other microservices, such as the Account Service. gRPC's efficiency and binary serialization make it suitable for real-time and high-performance scenarios involving transaction processing.
+
+## Authentication Service
+
+Use REST: REST is well-suited for client authentication and token generation. Clients can make HTTP requests to register, login, and obtain authentication tokens for subsequent API calls.
+
+## Reporting Service
+
+Use REST: Depending on the complexity and flexibility required by the reporting functionality, implementing a RESTful API for the Reporting Service microservice. REST is suitable for predefined reports with fixed data structures.
+
+## API Endpoints
+
+For detailed information about the API endpoints and their usage, please refer to the following sections:
+
+- [Transaction Microservice](#transaction-microservice)
+- [Reporting Microservice](#reporting-microservice)
+- [Account Service](#account-service)
+- [Auth Service](#auth-service)
+- [GraphQL Service](#graphql-service)
+
+
+
 ## Transaction Microservice
 
 - **Endpoint**: `/transfer`
